@@ -12,8 +12,8 @@ export default class News extends Component {
         }
     }
 
-    async componentDidMount() {
-        let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=843746d56f8a4018a7f351d14bded79f&page=1&pageSize=${this.props.pageSize}`
+    update = async () => {
+        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=843746d56f8a4018a7f351d14bded79f&page=${this.state.page}&pageSize=${this.props.pageSize}`
         this.setState({ loading: true })
         let data = await fetch(url)
         let parsedData = await data.json()
@@ -23,31 +23,20 @@ export default class News extends Component {
         })
         console.log(parsedData)
     }
+    async componentDidMount() {
+        this.update()
+    }
     handleLeftButton = async () => {
-        let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=843746d56f8a4018a7f351d14bded79f&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`
-        this.setState({
-            loading: true
+        await this.setState({
+            page: this.state.page - 1
         })
-        let data = await fetch(url)
-        let parsedData = await data.json()
-        this.setState({
-            articles: parsedData.articles,
-            page: this.state.page - 1,
-            loading: false
-        })
+        await this.update()
     }
     handleRightButton = async () => {
-        let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=843746d56f8a4018a7f351d14bded79f&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`
-        this.setState({
-            loading: true
+        await this.setState({
+            page: this.state.page + 1
         })
-        let data = await fetch(url)
-        let parsedData = await data.json()
-        this.setState({
-            articles: parsedData.articles,
-            page: this.state.page + 1,
-            loading: false
-        })
+        await this.update()
     }
     render() {
 
@@ -58,11 +47,10 @@ export default class News extends Component {
                     {!this.state.loading && this.state.articles.map((element) => {
                         return (
                             <div className='col-md-4'>
-                                <NewsItems title={element.title} desc={element.description} imageUrl={element.urlToImage} />
+                                <NewsItems title={element.title} desc={element.description} author={element.author} imageUrl={element.urlToImage} date={element.publishedAt} />
                             </div >
                         )
                     })}
-
                 </div>
                 {this.state.loading && <Spinner className="justify-center" />}
                 <div className='d-flex justify-content-between'>
