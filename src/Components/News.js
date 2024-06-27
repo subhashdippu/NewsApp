@@ -13,7 +13,7 @@ export default class News extends Component {
     }
 
     async componentDidMount() {
-        let url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=843746d56f8a4018a7f351d14bded79f&page=1"
+        let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=843746d56f8a4018a7f351d14bded79f&page=1&pageSize=${this.props.pageSize}`
         this.setState({ loading: true })
         let data = await fetch(url)
         let parsedData = await data.json()
@@ -24,24 +24,28 @@ export default class News extends Component {
         console.log(parsedData)
     }
     handleLeftButton = async () => {
-        let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=843746d56f8a4018a7f351d14bded79f&page=${this.state.page - 1}`
-        this.setState({ loading: true })
+        let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=843746d56f8a4018a7f351d14bded79f&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`
+        this.setState({
+            loading: true
+        })
         let data = await fetch(url)
         let parsedData = await data.json()
         this.setState({
             articles: parsedData.articles,
-            page: this.page - 1,
+            page: this.state.page - 1,
             loading: false
         })
     }
     handleRightButton = async () => {
-        let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=843746d56f8a4018a7f351d14bded79f&page=${this.state.page + 1}`
-        this.setState({ loading: true })
+        let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=843746d56f8a4018a7f351d14bded79f&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`
+        this.setState({
+            loading: true
+        })
         let data = await fetch(url)
         let parsedData = await data.json()
         this.setState({
             articles: parsedData.articles,
-            page: this.page + 1,
+            page: this.state.page + 1,
             loading: false
         })
     }
