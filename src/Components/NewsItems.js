@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 
 export default class NewsItems extends Component {
     render() {
-        let { desc, imageUrl, title, author, date } = this.props
+        let { desc, imageUrl, title, author, date, source } = this.props
         return (
             <div>
                 <div class="card" style={{ width: "25rem" }}>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        99+
+                        {source}
                         <span class="visually-hidden">unread messages</span>
                     </span>
                     <img src={!imageUrl ? "https://t4.ftcdn.net/jpg/02/09/53/11/360_F_209531103_vL5MaF5fWcdpVcXk5yREBk3KMcXE0X7m.jpg" : imageUrl} class="card-img-top" alt="..." />

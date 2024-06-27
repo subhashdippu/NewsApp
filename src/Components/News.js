@@ -3,13 +3,17 @@ import NewsItems from './NewsItems'
 import Spinner from './Spinner';
 
 export default class News extends Component {
-    constructor() {
-        super();
+    Capitalization = (word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+    }
+    constructor(props) {
+        super(props);
         this.state = {
             articles: [],
             page: 1,
             loading: false
         }
+        document.title = `${this.Capitalization(this.props.category)} - NewsApp`
     }
 
     update = async () => {
@@ -47,7 +51,7 @@ export default class News extends Component {
                     {!this.state.loading && this.state.articles.map((element) => {
                         return (
                             <div className='col-md-4'>
-                                <NewsItems title={element.title} desc={element.description} author={element.author} imageUrl={element.urlToImage} date={element.publishedAt} />
+                                <NewsItems title={element.title} desc={element.description} author={element.author} imageUrl={element.urlToImage} date={element.publishedAt} source={element.source.name} />
                             </div >
                         )
                     })}
