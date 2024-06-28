@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import NewsItems from './NewsItems'
 import Spinner from './Spinner';
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default class News extends Component {
     Capitalization = (word) => {
@@ -48,20 +49,30 @@ export default class News extends Component {
             <div className='container'>
                 <div className='row'>
                     <h1 className='text-center my-4 '>News Application</h1>
-                    {!this.state.loading && this.state.articles.map((element) => {
-                        return (
-                            <div className='col-md-4'>
-                                <NewsItems title={element.title} desc={element.description} author={element.author} imageUrl={element.urlToImage} date={element.publishedAt} source={element.source.name} />
-                            </div >
-                        )
-                    })}
+                    <InfiniteScroll
+                        dataLength={this.state.articles.length}
+                        next={this.fetchMoreData}
+                        hasMore={true}
+                        loader={<h4>Loading...</h4>}
+                    >
+                        {/* {this.state.items.map((i, index) => (
+                            <div style={style} key={index}>
+                                div - #{index}
+                            </div>
+                        ))} */}
+
+                        {!this.state.loading && this.state.articles.map((element) => {
+                            return (
+                                <div className='col-md-4' key={element.url}>
+                                    <NewsItems title={element.title} desc={element.description} author={element.author} imageUrl={element.urlToImage} date={element.publishedAt} source={element.source.name} />
+                                </div >
+                            )
+                        })}
+                    </InfiniteScroll>
                 </div>
-                {this.state.loading && <Spinner className="justify-center" />}
-                <div className='d-flex justify-content-between'>
-                    <button className='btn btn-primary' disabled={this.state.page <= 1} onClick={this.handleLeftButton}>&larr;</button>
-                    <button className='btn btn-primary' onClick={this.handleRightButton}>&rarr;</button>
-                </div>
-            </div>
+
+
+            </div >
         )
     }
 }
