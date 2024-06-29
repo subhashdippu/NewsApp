@@ -24,8 +24,9 @@ export default class News extends Component {
         let parsedData = await data.json()
         this.setState({
             articles: parsedData.articles,
-            loading: false
-        })
+            loading: false,
+            totalResults: parsedData.totalResults,
+        });
         console.log(parsedData)
     }
     async componentDidMount() {
@@ -43,35 +44,46 @@ export default class News extends Component {
         })
         await this.update()
     }
+    fetchMoreData = async () => {
+        this.setState({ page: this.state.page + 1 });
+        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=843746d56f8a4018a7f351d14bded79f&page=${this.state.page}&pageSize=${this.props.pageSize}`
+        this.setState({ loading: true })
+        let data = await fetch(url)
+        let parsedData = await data.json()
+        this.setState({
+            articles: this.state.articles.concat(parsedData.articles),
+            totalResults: parsedData.totalResults,
+            loading: false,
+        });
+    };
     render() {
 
         return (
             <div className='container'>
-                <div className='row'>
-                    <h1 className='text-center my-4 '>News Application</h1>
-                    <InfiniteScroll
-                        dataLength={this.state.articles.length}
-                        next={this.fetchMoreData}
-                        hasMore={true}
-                        loader={<h4>Loading...</h4>}
-                    >
-                        {/* {this.state.items.map((i, index) => (
-                            <div style={style} key={index}>
-                                div - #{index}
-                            </div>
-                        ))} */}
+                <h1 className='text-center my-4 '>
+                    News Application
+                </h1>
+                <InfiniteScroll
+                    dataLength={this.state.articles.length}
+                    next={this.fetchMoreData}
+                    hasMore={this.state.articles !== this.totalResults}
+                    loader={<Spinner />}
+                >
+                    <div className='container'>
 
-                        {!this.state.loading && this.state.articles.map((element) => {
-                            return (
-                                <div className='col-md-4' key={element.url}>
-                                    <NewsItems title={element.title} desc={element.description} author={element.author} imageUrl={element.urlToImage} date={element.publishedAt} source={element.source.name} />
-                                </div >
-                            )
-                        })}
-                    </InfiniteScroll>
-                </div>
+                        <div className='row'>
+                            {!this.state.loading && this.state.articles.map((element) => {
+                                return (
+                                    <div className='col-md-4' key={element.url}>
+                                        <NewsItems title={element.title} desc={element.description} author={element.author} imageUrl={element.urlToImage} date={element.publishedAt} source={element.source.name} />
+                                    </div >
+                                )
+                            })}
+                        </div>
+                    </div>
 
 
+                </InfiniteScroll >
             </div >
         )
     }
